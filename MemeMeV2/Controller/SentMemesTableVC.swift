@@ -16,10 +16,6 @@ class SentMemesTableVC: UITableViewController {
         let appDelegate = object as! AppDelegate
         return appDelegate.memes
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

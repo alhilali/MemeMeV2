@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MemeEditorViewController
 //  MemeMe
 //
 //  Created by Saud Alhelali on 25/10/2018.
@@ -38,24 +38,9 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         // Disable camera button when not available
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         
-        // Mark this class as delegate for text fields
-        topTextField.delegate = self
-        bottomTextField.delegate = self
-        
-        topTextField.text = "TOP"
-        bottomTextField.text = "BOTTOM"
-        
-        // Set text styling
-        let memeTextAttributes:[String: Any] = [
-           NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
-           NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
-           NSAttributedStringKey.font.rawValue: UIFont(name: "Impact", size: 40)!,
-           NSAttributedStringKey.strokeWidth.rawValue: -5.0
-        ]
-        topTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.textAlignment = .center
-        bottomTextField.textAlignment = .center
+        // Configure text
+        configure(topTextField, with: "TOP")
+        configure(bottomTextField, with: "BOTTOM")
         
         // Set image to nil if image exists
         imagePickerView.image = imagePickerView.image != nil ? nil : imagePickerView.image
@@ -110,18 +95,18 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func save() {
-        // Create the meme
-        let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView.image!, memedImage: generateMemedImage())
-        
-        let activityViewController = UIActivityViewController(activityItems: [meme.memedImage], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: [generateMemedImage()], applicationActivities: nil)
         activityViewController.popoverPresentationController?.sourceView = self.view
         
         self.present(activityViewController, animated: true, completion: nil)
         
-        // Save new meme to global array
         activityViewController.completionWithItemsHandler = {
             (activity, completed, items, error) in
             if completed {
+                // Create the meme
+                let meme = Meme(topText: self.topTextField.text!, bottomText: self.bottomTextField.text!, originalImage: self.imagePickerView.image!, memedImage: self.generateMemedImage())
+                
+                // Save new meme to global array
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.memes.append(meme)
                 print(appDelegate.memes)
@@ -197,10 +182,30 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     // MARK: Helper methods
+    
     func toolbarState(hiddenBar: Bool){
         self.navigationController?.isToolbarHidden = hiddenBar
-    self.navigationController?.isNavigationBarHidden = hiddenBar
+        self.navigationController?.isNavigationBarHidden = hiddenBar
     }
+    
+    func configure(_ textField: UITextField, with defaultText: String) {
+        // Mark this class as delegate for text fields
+        textField.delegate = self
+        
+        textField.text = defaultText
+        
+        // Set text styling
+        let memeTextAttributes:[String: Any] = [
+            NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
+            NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
+            NSAttributedStringKey.font.rawValue: UIFont(name: "Impact", size: 40)!,
+            NSAttributedStringKey.strokeWidth.rawValue: -5.0
+        ]
+        
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.textAlignment = .center
+    }
+    
     
 }
 

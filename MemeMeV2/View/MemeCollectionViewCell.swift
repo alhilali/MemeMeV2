@@ -1,5 +1,5 @@
 //
-//  CollectionViewCell.swift
+//  MemeCollectionViewCell
 //  MemeMeV2
 //
 //  Created by Saud Alhelali on 03/12/2018.
